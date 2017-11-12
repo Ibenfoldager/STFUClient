@@ -1,12 +1,86 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 nav {
     margin-bottom: 25px;
     margin-top: 20px;
 }
 
 dd {
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 
+/* hero image */
+.container-img {
+}
+
+.hero {
+    width: 100%;
+    height: auto;
+    opacity: 0.7;
+}
+
+
+#overskrift {
+    text-align: center;
+    position: absolute;
+    display: block;
+    margin: 0 auto;
+    padding: 10px;
+    top: 40vh;
+    left: 0;
+    right: 0;
+    color: #ffffff;
+}
+
+#button-container {
+    width: 150px;
+    height: 50px;
+    position: absolute;
+    top: 55vh;
+    left: 0;
+    right: 0;
+    margin: 5px auto;
+
+}
+/* event button */
+#event-btn {
+    text-decoration: none;
+    padding: 10px;
+    border: 2px solid #ffffff;
+    color: #ffffff;
+    font-weight: bold;
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#event-btn:hover {
+    color: black;
+}
+
+/* navigation */
+.navbar-default {
+    background-color: #ffffff;
+    color: #ffffff;
+    border-color: #fff;
+}
+
+/* styling af events.html */
+.my-events-h3 {
+    color: black;
+    text-align: center;
+    font-size: 34px;
+    margin: 25px auto;
+}
+
+#name, #time, #place, #attending {
+    text-align: center;
+}
+/*
 .book-container .panel-body {
     min-height: 242px;
 }
@@ -20,4 +94,4 @@ dd {
 
 .book-container .price-label p {
     margin: 4px 0 0 0;
-}
+}*/

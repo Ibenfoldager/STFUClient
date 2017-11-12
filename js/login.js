@@ -14,7 +14,7 @@ $(document).ready(() => {
       else if (err){
         console.log("BAd stuff happened")
       } else {
-        window.location.href = "my-page.html";
+        window.location.href = "../events.html";
       }
     });
 
