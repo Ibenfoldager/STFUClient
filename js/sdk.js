@@ -108,27 +108,50 @@ const SDK = {
       SDK.Storage.remove("user");
       window.location.href = "index.html";
     },
+
     login: (email, password, cb) => {
       SDK.request({
         data: {
           email: email,
           password: password
         },
-        url: "/users/login?include=user",
+        //url: "/users/login?include=user",
+          url:"/login",
         method: "POST"
       }, (err, data) => {
 
         //On login-error
         if (err) return cb(err);
 
-        SDK.Storage.persist("tokenId", data.id);
-        SDK.Storage.persist("userId", data.userId);
-        SDK.Storage.persist("user", data.user);
+        SDK.Storage.persist("crypted", data);
+        //SDK.Storage.persist("idStudent", data.idStudent);
+       // SDK.Storage.persist("password", data.password);
 
         cb(null, data);
 
       });
     },
+
+      create: (firstName, lastName, email, password, verifyPassword, cb) => {
+          SDK.request({
+              data: {
+                  firstName: firstName,
+                  lastName: lastName,
+                  email: email,
+                  password: password,
+                  verifyPassword: verifyPassword
+              },
+              url: "/register",
+              method: "POST"
+          }, (err, data) => {
+
+              //On create error?
+              if (err) return cb(err);
+
+
+          });
+      },
+
     loadNav: (cb) => {
       $("#nav-container").load("nav.html", () => {
         const currentUser = SDK.User.current();

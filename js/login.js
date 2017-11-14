@@ -12,12 +12,25 @@ $(document).ready(() => {
         $(".form-group").addClass("has-error");
       }
       else if (err){
-        console.log("BAd stuff happened")
+        console.log("An error happened")
       } else {
-        window.location.href = "../events.html";
+        window.location.href = "index.html";
       }
     });
 
   });
+
+    $("#create-button").click(() => {
+
+        const firstName = $("#inputFirstName").val();
+        const lastName = $("#inputLastName").val();
+        const email = $("#inputEmail2").val();
+        const password = $("#inputPassword2").val();
+        const verifyPassword = $("#inputPassword3").val();
+
+
+
+    });
+
 
 });
