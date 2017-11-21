@@ -11,48 +11,61 @@
 </head>
 <body>
 
+
+<div class="modal fade" id="attend-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">x
+                </span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">Your events</h4>
+        </div>
+        <div class="modal-body">
+            <table class="tabel">
+                <thead>
+                <tr>
+                    <th>Owner</th>
+                    <th>Event name</th>
+                    <th>Location</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                </tr>
+                </thead>
+                <tbody id="modal-tbody">
+
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <a href="profile.html">
+                <button type="button" class="btn btn-success">Proceed to attending events</button>
+            </a>
+        </div>
+    </div>
+</div>
+
+
 <div class="container-fluid">
 
     <div class="row" id="nav-container"></div>
 
-    <div class="row">
-        <!--<div class="col-lg-12">
-            <div class="page-header"><h3 class="my-events-h3">My events</h3></div>
-        </div>-->
-    </div>
-    <h3 class="my-events-h3">Events</h3>
-
-    <div class="row">
-        <div class="col-lg-2 img-container"></div>
-        <div class="col-lg-10 profile-info"></div>
-        <div class="col-lg-12">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th id="name">Name</th>
-                    <th id="place">Place</th>
-                    <th id="time">Time</th>
-                    <th id="description">Description</th>
-                    <th id="attending">Attending<br>students</th>
-                </tr>
-                </thead>
-                <tbody id="basket-tbody"></tbody>
-            </table>
-        </div>
+    <div class="page-header">
+        <h1>Events</h1>
     </div>
 
-</div>
+    <div class="row" id="event-list"></div>
 
 <footer class="footer">
     <div class="container">
-        <p class="text-muted">2017 © All rights reserved - DØK Social Inc.</p>
+        <p class="text-muted" align="center">2017 © All rights reserved - DØK Social Inc.</p>
     </div>
 </footer>
 
 <script src="lib/js/jquery-3.2.1.js"></script>
 <script src="lib/js/bootstrap.js"></script>
 <script src="js/sdk.js"></script>
-<script src="js/my-page.js"></script>
+<script src="js/events.js"></script>
 
 </body>
 </html>
