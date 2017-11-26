@@ -1,6 +1,8 @@
 $(document).ready(() => {
 
     SDK.User.loadNav();
+
+    const $attendEventList = $("#attending-event-tbody");
     const $ownEventList = $("#created-event-tbody");
 
 
@@ -23,16 +25,35 @@ $(document).ready(() => {
                         <td>${event.location}</td>
                         <td>${event.description}</td>
                         <td>${event.eventDate}</td>
-                        <td><button class="btn-danger">SLET</button></td>
+                        <td><button class="btn-danger">Delete</button></td>
+                        <td><a href="updateEvent.html"><button class="btn-success">Update</button></a></td>                
                     </tr>
                     `;
                     $ownEventList.append(eventHtml);
                 }
-
-            });
         });
 
-    })
+        });
+
+        SDK.User.findAllAttendingEvents((cb, events) => {
+           events = JSON.parse(events);
+           events.forEach((event) => {
+                   let eventHtml = `
+                   <tr>
+                    <td>${event.owner}</td>
+                    <td>${event.eventName}</td>
+                    <td>${event.location}</td>
+                    <td>${event.description}</td>
+                    <td>${event.eventDate}</td>
+                    </tr>
+                   `;
+                   $attendEventList.append(eventHtml);
+           })
+        });
+
+        });
+
+    });
 
 
     const $modalTbody = $("#basket-tbody");
@@ -156,4 +177,3 @@ $(document).ready(() => {
         });
     });
 
-});

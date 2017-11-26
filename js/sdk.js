@@ -30,15 +30,28 @@ const SDK = {
 
   },
   Event: {
-    addToAttendingEvents: (event) => {
+    attendEvent: (idEvent, eventName, location, price, eventDate, description, cb) => {
 
-      SDK.request({
-          method: "POST",
-          url: "/events/join"
+        SDK.request({
+            data: {
+                idEvent: idEvent,
+                eventName: eventName,
+                price: price,
+                location: location,
+                description:description,
+                eventDate: eventDate,
+            },
+            method: "POST",
+            url: "/events/join"
+        }, (err, data) => {
 
-      });
+            cb(null, data);
 
-      let mineEvents = SDK.Storage.load("mineEvents");
+        });
+
+    },
+
+      /*let mineEvents = SDK.Storage.load("mineEvents");
 
       //Has anything been added to mine events before?
       if (!mineEvents) {
@@ -49,7 +62,7 @@ const SDK = {
       }
 
       //Does the event already exist?
-      let foundEvent = mineEvents.find(e => e.event.id === event.id);
+      let foundEvent = mineEvents.find(e => e.event.idEvent === event.idEvent);
       if (foundEvent) {
         let i = mineEvents.indexOf(foundEvent);
         mineEvents[i].count++;
@@ -61,7 +74,7 @@ const SDK = {
       }
 
       SDK.Storage.persist("mineEvents", event);
-    },
+    }, */
 
     findAll: (cb, events) => {
       SDK.request({
@@ -131,13 +144,12 @@ const SDK = {
 
           if (err) return cb(err);
 
+          localStorage.setItem("idStudent", JSON.parse(data).idStudent);
+
           cb(null,data);
         });
     },
     logOut: () => {
-   /*   SDK.Storage.remove("tokenId");
-      SDK.Storage.remove("userId");
-      SDK.Storage.remove("user");  */
       localStorage.removeItem("token");
       window.location.href = "login.html";
     },
@@ -183,6 +195,18 @@ const SDK = {
 
               cb(null, data);
           });
+      },
+
+      findAllAttendingEvents: (cb, events) => {
+          SDK.request({
+              method: "GET",
+              url: "/students/" + localStorage.getItem("idStudent") + "/events",
+              headers: {
+                  filter: {
+                      include: ["events"]
+                  }
+              }
+          }, cb);
       },
 
     loadNav: (cb) => {

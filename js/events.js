@@ -37,7 +37,7 @@ $(document).ready(() => {
             <p>Kr. <span class="price-amount">${event.price}</span></p>
             </div>
         <button class="col-lg-8 tex-right">
-        <button class="btn btn-success attend-button" data-event-id="${event.id}">Attend event</button>
+        <button class="btn btn-success attend-button" data-event-id="${event.idEvent}">Attend event</button>
              </div>
         </div>
        </div>
@@ -50,10 +50,25 @@ $(document).ready(() => {
 
     $(".attend-button").click(function(){
 
-      const eventId = $(this).data("event-id");
-      const event = events.find((event) => event.id === eventId);
-window.alert(eventId);
-      SDK.Event.addToAttendingEvents(event);
+      const idEvent = $(this).data("event-id");
+      const event = events.find((event) => event.idEvent === idEvent);
+
+      console.log(event);
+
+      SDK.Event.attendEvent(idEvent, event.eventName, event.location, event.price, event.eventDate, event.description, (err, data) =>{
+        if (err && err.xhr.status === 401) {
+          $(".form-group").addClass("has-error")
+        }
+        else if (err){
+          console.log("An error happened")
+            window.alert("Something happened - try to join the event again")
+        } else {
+          window.location.href = "profile.html";
+        }
+
+
+
+      })
 
 
 
@@ -63,7 +78,7 @@ window.alert(eventId);
 
   $("#attend-modal").on("shown.es.modal", () => {
     const mineEvents = SDK.Storage.load("mineEvents");
-    const $modalTbody = $("#modal-tbodyody");
+    const $modalTbody = $("#modal-tbody");
     mineEvents.forEach((entry) => {
       $modalTbody.append(`
       <tr>
