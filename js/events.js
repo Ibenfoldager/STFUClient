@@ -3,6 +3,7 @@ $(document).ready(() => {
   SDK.User.loadNav();
   //const currentUser = SDK.User.current();
     const $eventList = $("#event-list");
+    const $attendingStudents = $("#attending-students")
 
   /*$(".page-header").html(`
     <h1>Hi, ${currentUser.firstName} ${currentUser.lastName}</h1>
@@ -37,7 +38,8 @@ $(document).ready(() => {
             <p>Kr. <span class="price-amount">${event.price}</span></p>
             </div>
         <button class="col-lg-8 tex-right">
-        <button class="btn btn-success attend-button" data-event-id="${event.idEvent}">Attend event</button>
+        <button class="btn attend-button" data-event-id="${event.idEvent}">Attend event</button>
+        <button class="btn all-attending-students" data-toggle="modal" data-target="#attendingStudents" data-attending-event-id="${event.idEvent}">Attending students</button>
              </div>
         </div>
        </div>
@@ -67,28 +69,40 @@ $(document).ready(() => {
         }
 
 
-
       })
 
-
-
     });
+
+    $(".all-attending-students").click(function(){
+      var idEvent = $(this).data("attending-event-id")
+
+
+        SDK.Event.findAllAttendingStudents(idEvent, (cb, students) => {
+          if(students){
+            students = JSON.parse(students);
+            students.forEach((student) => {
+
+                const attendHtml = `
+        <tr>
+        <td>${student.firstName}</td> 
+        <td>${student.lastName}</td>
+         </tr>`;
+
+         $attendingStudents.append(attendHtml)
+
+            });
+          } else {
+            window.alert("No one is attending")
+          }
+        });
+      });
+    });
+
+  $("#close").click(function () {
+    $("#attending-students").html("");
 
   });
 
-  $("#attend-modal").on("shown.es.modal", () => {
-    const mineEvents = SDK.Storage.load("mineEvents");
-    const $modalTbody = $("#modal-tbody");
-    mineEvents.forEach((entry) => {
-      $modalTbody.append(`
-      <tr>
-      <td>${entry.event.eventName}</td>
-      <td>${entry.count}</td>
-      <td>kr. ${entry.event.price}</td>
-      <td>kr. 0</td>
-      </tr>
-      
-      `)
-    });
   });
-});
+
+

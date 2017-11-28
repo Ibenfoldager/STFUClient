@@ -11,37 +11,23 @@
 </head>
 <body>
 
+<!-- Modal -->
+<div id="attendingStudents" class="modal fade" role="dialog">
+    <div class="modal-dialog">
 
-<div class="modal fade" id="attend-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">x
-                </span>
-            </button>
-            <h4 class="modal-title" id="myModalLabel">Your events</h4>
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Attending students</h4>
+            </div>
+            <div class="modal-body" id="attending-students">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="close">Close</button>
+            </div>
         </div>
-        <div class="modal-body">
-            <table class="tabel">
-                <thead>
-                <tr>
-                    <th>Owner</th>
-                    <th>Event name</th>
-                    <th>Location</th>
-                    <th>Description</th>
-                    <th>Price</th>
-                </tr>
-                </thead>
-                <tbody id="modal-tbody">
 
-                </tbody>
-            </table>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <a href="profile.html">
-                <button type="button" class="btn btn-success">Proceed to attending events</button>
-            </a>
-        </div>
     </div>
 </div>
 
