@@ -2,16 +2,10 @@ const SDK = {
     serverURL: "http://localhost:8080/api",
     request: (options, cb) => {
 
-        /*    let headers = {};
-            if (options.headers) {
-              Object.keys(options.headers).forEach((h) => {
-                headers[h] = (typeof options.headers[h] === 'object') ? JSON.stringify(options.headers[h]) : options.headers[h];
-              });
-            }
-        */
+
         let token = {
             "Authorization": localStorage.getItem("token")
-        }
+        };
 
         $.ajax({
             url: SDK.serverURL + options.url,
@@ -19,9 +13,9 @@ const SDK = {
             headers: token,
             contentType: "application/json",
             dataType: "json",
-            data: JSON.stringify(options.data),
+            data: JSON.stringify(SDK.Encryption.encrypt(JSON.stringify(options.data))),
             success: (data, status, xhr) => {
-                cb(null, data, status, xhr);
+                cb(null, SDK.Encryption.decrypt(data), status, xhr);
             },
             error: (xhr, status, errorThrown) => {
                 cb({xhr: xhr, status: status, error: errorThrown});
@@ -29,6 +23,7 @@ const SDK = {
         });
 
     },
+
     Event: {
         attendEvent: (idEvent, eventName, location, price, eventDate, description, cb) => {
 
@@ -109,7 +104,6 @@ const SDK = {
         },
 
         updateEvent: (eventName, price, location, description, eventDate, idEvent, cb) => {
-
             SDK.request({
                 data: {
                     eventName: eventName,
@@ -131,29 +125,8 @@ const SDK = {
             });
         },
 
-
-
     },
 
-    Order: {
-        create: (data, cb) => {
-            SDK.request({
-                method: "POST",
-                url: "/orders",
-                data: data,
-                headers: {authorization: SDK.Storage.load("tokenId")}
-            }, cb);
-        },
-        findMine: (cb) => {
-            SDK.request({
-                method: "GET",
-                url: "/orders/" + SDK.User.current().id + "/allorders",
-                headers: {
-                    authorization: SDK.Storage.load("tokenId")
-                }
-            }, cb);
-        }
-    },
     User: {
         findAll: (cb) => {
             SDK.request({method: "GET", url: "/staffs"}, cb);
@@ -172,9 +145,17 @@ const SDK = {
                 cb(null, data);
             });
         },
-        logOut: () => {
-            localStorage.removeItem("token");
-            window.location.href = "login.html";
+        logOut: (cb) => {
+            SDK.request({
+                method: "POST",
+                url: "/students/logout",
+            }, (err, data) => {
+                if (err) {
+                    return cb(err);
+                }
+
+                cb(null, data);
+            });
         },
 
         login: (email, password, cb) => {
@@ -191,13 +172,15 @@ const SDK = {
                 //On login-error
                 if (err) return cb(err);
 
-                localStorage.setItem("token", data);
+
+                localStorage.setItem("token", JSON.parse(data));
 
 
                 cb(null, data);
 
             });
         },
+
         createUser: (firstName, lastName, email, password, verifyPassword, cb) => {
             SDK.request({
                 data: {
@@ -250,7 +233,18 @@ const SDK = {
             <li><a href="login.html">Log-in <span class="sr-only">(current)</span></a></li>
           `);
                     }
-                    $("#logout-link").click(() => SDK.User.logOut());
+                    $("#logout-link").click(() => {
+                        SDK.User.logOut((err, data) =>{
+                         if (err && err.xhr.status === 401) {
+                             $(".form-group").addClass("has-error");
+                         } else {
+                             localStorage.removeItem("token");
+                             localStorage.removeItem("idStudent");
+                             window.location.href = "login.html";
+                         }
+
+                        });
+                    });
 
                 });
 
@@ -258,28 +252,63 @@ const SDK = {
             });
         }
     },
-    Storage: {
-        prefix: "EventStoreSDK",
-        persist: (key, value) => {
-            window.localStorage.setItem(SDK.Storage.prefix + key, (typeof value === 'object') ? JSON.stringify(value) : value)
-        },
-        load: (key) => {
-            const val = window.localStorage.getItem(SDK.Storage.prefix + key);
-            try {
-                return JSON.parse(val);
+
+
+        Storage: {
+            prefix: "EventStoreSDK",
+            persist: (key, value) => {
+                window.localStorage.setItem(SDK.Storage.prefix + key, (typeof value === 'object') ? JSON.stringify(value) : value)
+            },
+            load: (key) => {
+                const val = window.localStorage.getItem(SDK.Storage.prefix + key);
+                try {
+                    return JSON.parse(val);
+                }
+                catch (e) {
+                    return val;
+                }
+            },
+            remove: (key) => {
+                window.localStorage.removeItem(SDK.Storage.prefix + key);
             }
-            catch (e) {
-                return val;
+        },
+
+    Encryption: {
+
+
+        encrypt: (encrypt) => {
+            if (encrypt !== undefined && encrypt.length !== 0) {
+                const fields = ['J', 'M', 'F'];
+                let encrypted = '';
+                for (let i = 0; i < encrypt.length; i++) {
+                    encrypted += (String.fromCharCode((encrypt.charAt(i)).charCodeAt(0) ^(fields[i % fields.length]).charCodeAt(0)))
+                }
+                return encrypted;
+            } else {
+                return encrypt;
             }
         },
-        remove: (key) => {
-            window.localStorage.removeItem(SDK.Storage.prefix + key);
+
+        decrypt: (decrypt) => {
+         if (decrypt.length > 0 && decrypt !== undefined) {
+             const fields = ['J', 'M', 'F'];
+             let decrypted = '';
+             for (let i = 0; i < decrypt.length; i++) {
+                 decrypted += (String.fromCharCode((decrypt.charAt(i)).charCodeAt(0) ^(fields[i % fields.length]).charCodeAt(0)))
+             }
+             return decrypted;
+         } else {
+             return decrypt;
+            }
         }
     },
-    URL: {
-        getParameterByName: (name) => {
-            var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
-            return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+
+
+        URL: {
+            getParameterByName: (name) => {
+                var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+                return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+            }
         }
-    }
+
 };

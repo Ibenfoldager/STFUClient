@@ -5,9 +5,7 @@ $(document).ready(() => {
     const $eventList = $("#event-list");
     const $attendingStudents = $("#attending-students")
 
-  /*$(".page-header").html(`
-    <h1>Hi, ${currentUser.firstName} ${currentUser.lastName}</h1>
-  `);*/
+
 
 
   SDK.Event.findAll((cb, events) => {

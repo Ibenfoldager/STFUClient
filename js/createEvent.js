@@ -2,6 +2,7 @@ $(document).ready(() => {
 
     SDK.User.loadNav();
 
+
     $("#create-event-button").click(() => {
 
         const eventName = $("#inputEventName").val();
