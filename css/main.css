@@ -80,18 +80,3 @@ dd {
 #name, #time, #place, #attending {
     text-align: center;
 }
-/*
-.book-container .panel-body {
-    min-height: 242px;
-}
-.book-container img {
-    height: 120px;
-}
-.book-container .price-label {
-    font-size: 1.4em;
-    font-weight: bold;
-}
-
-.book-container .price-label p {
-    margin: 4px 0 0 0;
-}*/

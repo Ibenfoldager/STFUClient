@@ -1,8 +1,9 @@
 $(document).ready(() => {
 
+
     SDK.User.loadNav();
 
-
+    //Running method when create-event-button is clicked
     $("#create-event-button").click(() => {
 
         const eventName = $("#inputEventName").val();

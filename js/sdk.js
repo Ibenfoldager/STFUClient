@@ -7,6 +7,7 @@ const SDK = {
             "Authorization": localStorage.getItem("token")
         };
 
+        //Asynchronous JavaScript And XML
         $.ajax({
             url: SDK.serverURL + options.url,
             method: options.method,
@@ -25,6 +26,8 @@ const SDK = {
     },
 
     Event: {
+
+        //Make it possible to join a created event. Passes all the data to the server-side
         attendEvent: (idEvent, eventName, location, price, eventDate, description, cb) => {
 
             SDK.request({
@@ -46,7 +49,7 @@ const SDK = {
 
         },
 
-
+        //Make it possible to delete one of the events you created yourself. Passes all the data to the server-side
         deleteEvent: (idEvent, eventName, location, price, eventDate, description, cb) => {
             SDK.request({
                 data: {
@@ -58,10 +61,13 @@ const SDK = {
                     eventDate: eventDate,
                 },
                 method: "PUT",
+
+                //Need to pass the concerned idEvent to the server
                 url: "/events/" + idEvent + "/delete-event",
             }, cb);
         },
 
+        //Find all events
         findAll: (cb, events) => {
             SDK.request({
                 method: "GET",
@@ -74,13 +80,16 @@ const SDK = {
             }, cb);
         },
 
+        //Find all attending students for the specific event
         findAllAttendingStudents: (idEvent, cb) => {
             SDK.request({
                 method: "GET",
+                //Need to pass the concerned idEvent to the server
                 url: "/events/" + idEvent + "/students",
             }, cb);
         },
 
+        //The user can create an event. passes all the data to the server-side.
         createEvent: (eventName, price, location, description, eventDate, cb) => {
             SDK.request({
                 data: {
@@ -103,6 +112,7 @@ const SDK = {
             });
         },
 
+        //The user can update one of their own created events. passes all the data to the server-side.
         updateEvent: (eventName, price, location, description, eventDate, idEvent, cb) => {
             SDK.request({
                 data: {
@@ -112,6 +122,8 @@ const SDK = {
                     description: description,
                     eventDate: eventDate,
                 },
+
+                //Need to pass the concerned idEvent to the server
                 url: "/events/" + idEvent + "/update-event",
                 method: "PUT"
             }, (err, data) => {
@@ -128,9 +140,7 @@ const SDK = {
     },
 
     User: {
-        findAll: (cb) => {
-            SDK.request({method: "GET", url: "/staffs"}, cb);
-        },
+        //Finds the current student af pass it to the localStorage
         current: (cb) => {
 
             SDK.request({
@@ -145,6 +155,8 @@ const SDK = {
                 cb(null, data);
             });
         },
+
+        //Logout the current student
         logOut: (cb) => {
             SDK.request({
                 method: "POST",
@@ -158,21 +170,23 @@ const SDK = {
             });
         },
 
+        //Login methode. You can't access any other methods before loggin in.
+        //Passes email and password to server-side
         login: (email, password, cb) => {
             SDK.request({
                 data: {
                     email: email,
                     password: password
                 },
-                //url: "/users/login?include=user",
+
                 url: "/login",
                 method: "POST"
             }, (err, data) => {
 
-                //On login-error
+
                 if (err) return cb(err);
 
-
+                //Gets the current student's token and store it in the localStorage
                 localStorage.setItem("token", JSON.parse(data));
 
 
@@ -181,6 +195,7 @@ const SDK = {
             });
         },
 
+        //New students can create an user. passes all the data to the server-side.
         createUser: (firstName, lastName, email, password, verifyPassword, cb) => {
             SDK.request({
                 data: {
@@ -203,9 +218,11 @@ const SDK = {
             });
         },
 
+        //Find all the events the current student is attending in
         findAllAttendingEvents: (cb, events) => {
             SDK.request({
                 method: "GET",
+                //Get the students id from the localStorage
                 url: "/students/" + localStorage.getItem("idStudent") + "/events",
                 headers: {
                     filter: {
@@ -215,14 +232,12 @@ const SDK = {
             }, cb);
         },
 
+        //Method fot loading the nav-bar and controlling whether is should show a 'logout' or 'login' button
         loadNav: (cb) => {
             $("#nav-container").load("nav.html", () => {
                 var currentUser = null;
                 SDK.User.current((error, res) => {
                     currentUser = res;
-
-
-                    console.log(currentUser);
 
                     if (currentUser) {
                         $(".navbar-right").html(`
@@ -233,6 +248,7 @@ const SDK = {
             <li><a href="login.html">Log-in <span class="sr-only">(current)</span></a></li>
           `);
                     }
+                    //Removes the token and student id from the localStorage, when the log-out button is clicked
                     $("#logout-link").click(() => {
                         SDK.User.logOut((err, data) =>{
                          if (err && err.xhr.status === 401) {
@@ -253,7 +269,7 @@ const SDK = {
         }
     },
 
-
+        //Storage method that make it possible to localstorage token, id and so
         Storage: {
             prefix: "EventStoreSDK",
             persist: (key, value) => {
@@ -273,9 +289,10 @@ const SDK = {
             }
         },
 
+
     Encryption: {
 
-
+        //Encrypt the values sent from the client to the server
         encrypt: (encrypt) => {
             if (encrypt !== undefined && encrypt.length !== 0) {
                 const fields = ['J', 'M', 'F'];
@@ -289,6 +306,7 @@ const SDK = {
             }
         },
 
+        //Decrypt the methods received from the serverside
         decrypt: (decrypt) => {
          if (decrypt.length > 0 && decrypt !== undefined) {
              const fields = ['J', 'M', 'F'];
@@ -303,7 +321,7 @@ const SDK = {
         }
     },
 
-
+        //Pass the url to the next window, for instance when updating event
         URL: {
             getParameterByName: (name) => {
                 var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
