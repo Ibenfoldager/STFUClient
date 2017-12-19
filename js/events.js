@@ -27,7 +27,7 @@ $(document).ready(() => {
           <dd>${event.location}</dd>
           <dt>Price</dt>
           <dd>${event.price}</dd>
-            <button class="btn attend-button" style="background: #008DD5" data-event-id="${event.idEvent}"><span style="color: #ffffff;">Attend event</span></button>
+            <button class="btn attend-button" style="background: #008DD5" data-event-id="${event.idEvent}"><span style="color: #ffffff;">Attend event</span></button> 
             <button class="btn all-attending-students" style="background: #008DD5;" data-toggle="modal" data-target="#attendingStudents" data-attending-event-id="${event.idEvent}"><span style="color: #ffffff;">Attending students</span></button>
           </dl>
          </div>
